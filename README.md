@@ -10,7 +10,6 @@ Aims to discuss and enlighten on two basic themes:
 
 
 ### Structure
-
-* **slides** - a [ RevealJS ](http://lab.hakim.se/reveal-js/#/) presentation
 * **ruby** - heavily commented example code using Thread, Queue, Mutex,
   Celluloid, etc
+* **slides** - a [ RevealJS ](http://lab.hakim.se/reveal-js/#/) presentation
