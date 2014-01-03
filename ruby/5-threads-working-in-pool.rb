@@ -14,46 +14,59 @@ require "benchmark"
 # A very important class for finding the titles of things
 # on the tubes.  Talk to Trevor if you're interested in 
 # angel investment opportunities for WebTitle.  Patent pending.
+# All rights and licenses and honors and awards greedily reserved.
 class WebTitle
   attr_reader :origin
   attr_accessor :doc
 
   def self.collect_and_print_these(urls, thread_limit)
     if thread_limit > 1
-      puts "Running multi-threaded"
+      puts "[*] Running multi-threaded"
+      puts "[*] #{thread_limit} threads"
       fetch_multi_threaded(urls, thread_limit)
     elsif thread_limit == 1
-      puts "Running single-threaded"
+      puts "[*] Running single-threaded"
      fetch_single_threaded(urls)
     else
       fail "thread_limit must be a positive integer" 
     end
   end
 
+  # Fetch the URLs multi-threaded, blocking the calling
+  # thread until done.
   def self.fetch_multi_threaded(urls, thread_limit)
-    threads = []
     queue   = Queue.new
     urls.each{|u| queue << u } 
 
-    thread_limit.times do
-      threads << Thread.new do
+    http_threads = thread_limit.times.collect do
+      Thread.new do
         begin
-          title = new(queue.pop(true)) 
+          title = new(queue.pop(true))  # true b/c this shouldn't block when queue is empty
           title.fetch
           puts title.text
-        rescue ThreadError => e
+        rescue ThreadError, TimeoutError => e
+          # Queue#pop(true) will raise ThreadError when Queue#empty? is true
+          # so this is the exit condition for Thread.current.
           if queue.empty?
-            return
+            exit
+
+          # I just put this because it was happening sometimes on the web
+          # and it was getting annoying.
+          elsif e.is_a? TimeoutError
+            puts "Timeout: #{e}"
+            exit
+
+          # A real exception!
           else
             raise e
           end
         end
       end
     end
-    threads.each{ |t| t.join }
+    http_threads.map(&:join)
   end
 
-
+  # Fetch the URLs sequentially on the calling thread
   def self.fetch_single_threaded(urls)
     urls.each do |u|
       title = new(u)
@@ -62,19 +75,25 @@ class WebTitle
     end
   end
     
+  # Get a webpage from the internet and parse it into an
+  # HTML document structure
   def fetch
     self.doc ||= Nokogiri::HTML(open(origin))
   end
 
+  # Of the form "http://www.the-web-is-s00per.com"
   def initialize(http_url)
     @origin = http_url
   end
 
+  # WebTitle just care about title
   def text
-    @text ||= doc.css('title')
+    @text ||= doc.css('title').inner_html
   end
 end
 
+
+#### USAGE OF OUR MASTERFUL CLASS ##### ---------------------------------------
 
 web_urls = [
   "http://google.com",
@@ -101,7 +120,11 @@ web_urls = [
 ]
 
 
-WebTitle.collect_and_print_these(web_urls, ARGV[1] || web_urls.size)
-
-
+# Run multi-threaded by default
+# or pass in a number of threads.
+Benchmark.bm do |x|
+  x.report do
+    WebTitle.collect_and_print_these(web_urls, ARGV[1] || web_urls.size)
+  end
+end
 
