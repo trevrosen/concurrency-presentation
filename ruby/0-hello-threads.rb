@@ -11,8 +11,5 @@ t2 = Thread.new{ puts "Thread t2 (#{Thread.current.object_id}) is running"}
 
 puts "Calling thread (#{Thread.current.object_id})is running"
 
-#sleep 5   # Maybe we could let it just sleep until they all execute.  That's a thing, right?
-
-# No - don't sleep.  That's crazy. 
-# Just make the calling thread wait for them all to finish.
+# Make the calling thread wait for them all to finish.
 [t1, t2].each{|t| t.join}

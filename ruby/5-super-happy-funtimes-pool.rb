@@ -5,8 +5,6 @@
 # networks.
 #
 #
-#
-#
 require "nokogiri"
 require "open-uri"
 require "benchmark"
@@ -34,36 +32,60 @@ class WebTitle
 
   # Fetch the URLs multi-threaded, blocking the calling
   # thread until done.
+  #
+  #
+  # NOTE: if you think the Thread might raise an exception,
+  # (which face it, it probably could unless it's a toy)
+  # you can't Thread#exit in a rescue because it will end up
+  # getting joined and exit the process.
   def self.fetch_multi_threaded(urls, thread_limit)
     queue   = Queue.new
     urls.each{|u| queue << u } 
+    puts "The queue is size: #{queue.size}"
 
-    http_threads = thread_limit.times.collect do
+    http_threads = Array.new(thread_limit) do
       Thread.new do
-        begin
-          title = new(queue.pop(true))  # true b/c this shouldn't block when queue is empty
-          title.fetch
-          puts title.text
-        rescue ThreadError, TimeoutError => e
-          # Queue#pop(true) will raise ThreadError when Queue#empty? is true
-          # so this is the exit condition for Thread.current.
-          if queue.empty?
-            exit
+        loop do  # Each thread infinitely loops, pulling items out of the queue until it hits a break condition
+          begin
+            title = new(queue.pop(true))  # true b/c this shouldn't block when queue is empty
+            title.fetch
+            puts title.text
+          rescue ThreadError, TimeoutError => e
+            # Queue#pop(true) will raise ThreadError when Queue#empty? is true
+            # so this is the exit condition for Thread.current.
+            if queue.empty?
+              break
 
-          # I just put this because it was happening sometimes on the web
-          # and it was getting annoying.
-          elsif e.is_a? TimeoutError
-            puts "Timeout: #{e}"
-            exit
+            # I just put this because it was happening sometimes on the web
+            # and it was getting annoying.
+            elsif e.is_a? TimeoutError
+              puts "Timeout: #{e}"
+              break
 
-          # A real exception!
-          else
-            raise e
+            # A real exception!
+            else
+              raise e
+            end
           end
         end
       end
     end
-    http_threads.map(&:join)
+    # You see this all the time in Ruby threading examples, but it's
+    # naive.  Don't do this unless you are OK with boiling up 
+    # exceptions to calling thread.
+    #
+    # http_threads.map(&:join)
+
+
+    # Do this instead so you can handle the exceptions that happen
+    # in child threads.
+    http_threads.each do |t|
+      begin
+        t.join  
+      rescue Exception => e
+        puts e
+      end
+    end
   end
 
   # Fetch the URLs sequentially on the calling thread
@@ -124,7 +146,8 @@ web_urls = [
 # or pass in a number of threads.
 Benchmark.bm do |x|
   x.report do
-    WebTitle.collect_and_print_these(web_urls, ARGV[1] || web_urls.size)
+    #WebTitle.collect_and_print_these(web_urls, ARGV[1] || web_urls.size)
+    WebTitle.collect_and_print_these(web_urls, ARGV[1] || 10)
   end
 end
 
