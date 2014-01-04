@@ -15,4 +15,4 @@ bar = Thread.new{
 }
 
 # Try taking out the line below and running it over and over to see what happens
-[foo, bar].each{|t| t.join }
+[foo, bar].map(&:join)

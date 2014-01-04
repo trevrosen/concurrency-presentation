@@ -1,13 +1,12 @@
-# A pool of threads is a good solution when you
-# need to do a bunch of IO-based work.  Network
-# IO lends itself well to multithreading inherently 
-# because of the natural latency present in all
-# networks.
-#
+# A pool of threads is a good solution when you need to do a bunch 
+# of IO-based work.  Network IO lends itself well to multithreading 
+# inherently because of the natural latency present in all networks.
 #
 require "nokogiri"
 require "open-uri"
 require "benchmark"
+
+
 
 # A very important class for finding the titles of things
 # on the tubes.  Talk to Trevor if you're interested in 
@@ -35,9 +34,9 @@ class WebTitle
   #
   #
   # NOTE: if you think the Thread might raise an exception,
-  # (which face it, it probably could unless it's a toy)
-  # you can't Thread#exit in a rescue because it will end up
-  # getting joined and exit the process.
+  # (which face it, it probably could) you can't Thread#exit 
+  # in a rescue because it will end up getting joined and exit 
+  # the process early.
   def self.fetch_multi_threaded(urls, thread_limit)
     queue   = Queue.new
     urls.each{|u| queue << u } 
@@ -54,6 +53,8 @@ class WebTitle
             # Queue#pop(true) will raise ThreadError when Queue#empty? is true
             # so this is the exit condition for Thread.current.
             if queue.empty?
+              # Outside the loop, there's nothing for the thread to do
+              # so this exits the thread block.
               break
 
             # I just put this because it was happening sometimes on the web
