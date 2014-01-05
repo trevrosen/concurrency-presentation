@@ -1,4 +1,4 @@
-![](https://github.com/trevrosen/concurrency-presentation/master/slides/img/lies.jpg?raw=true)
+![](https://raw.github.com/trevrosen/concurrency-presentation/master/slides/img/lies.jpg)
 
 
 ### Purpose
