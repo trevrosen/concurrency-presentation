@@ -1,6 +1,6 @@
 # Exceptions raised in threads whose caller is sleeping
 # won't bubble up.
-exceptional_thread = Thread.new do
+silent_scream = Thread.new do
   puts "You'd never know it, but I'm about to freak"
   fail
 end

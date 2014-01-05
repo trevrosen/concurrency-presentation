@@ -16,3 +16,7 @@ bar = Thread.new{
 
 # Try taking out the line below and running it over and over to see what happens
 [foo, bar].map(&:join)
+
+# Running this over and over will show different values at different times, 
+# but the final counter value should always be the same.
+puts "no matter how they fire, counter should always be #{counter}"

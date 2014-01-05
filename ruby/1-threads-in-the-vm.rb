@@ -44,8 +44,8 @@ infinite = Thread.new do
 
 # Put arbitrary attributes on the thread - let's put
 # names on them that we can grab later.
-infinite[:name] = "infinite"  
 stopped[:name]  = "stopped"
+infinite[:name] = "infinite"  
 
 # How many threads is the VM tracking now?
 puts "[- main thread -] #{(Thread.list - [Thread.current]).size} child threads are running or runnable"

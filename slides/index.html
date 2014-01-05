@@ -43,7 +43,7 @@
           <code>
 talk = Thread.new{ print "Let's talk concurrency "}
 kata = Thread.new{ print "and do a kata with threads."}
-[talk, kata].each{|t| t.join}
+[talk, kata].map(&:join)
           </code>
           </pre>
           <h4>Presented by</h4>
@@ -53,44 +53,182 @@ kata = Thread.new{ print "and do a kata with threads."}
 
         <section>
           <h2>Concurrency isn't Parallelism</h2>
-          <ul>
-            <li><strong>Concurrency</strong> - multiple things take place over the same time frame</li>
-            <li><strong>Parallelism</strong> - multiple things happening in the same literal instant of time</li>
-          </ul>
         </section>
 
         <section>
-          <h2>Hardware is easier than software (sorta)</h2>
+          <h2>Concurrency</h2>
+          <p>"Programming as the composition of independently executing processes."</p>
+          <small><a href="http://concur.rspace.googlecode.com/hg/talk/concur.html#title-slide">http://concur.rspace.googlecode.com/hg/talk/concur.html#title-slide</a></small>
+        </section>
+
+        <section>
+          <h2>Parallelism</h2>
+          <p>"Programming as the **simultaneous execution** of (possibly related) computations."</p>
+          <small><a href="http://concur.rspace.googlecode.com/hg/talk/concur.html#title-slide">http://concur.rspace.googlecode.com/hg/talk/concur.html#title-slide</a></small>
+        </section>
+
+        <section>
+          <h2>The Epic Macro Problem of Contemporary Computation:</h2>
+          <h3>Hardware is easier than software (sorta)</h3>
+        </section>
+
+        <section>
+          <h3>"Lol wut - hardware is *easy*?"</h3>
           <ul>
             <li>We are *good* at making multicore chips</li>
             <li>We are *bad* making use of those cores in software</li>
             <li>Software must get better at concurrency in general</li>
-            <li>Interpreters and languages in general must offer genuine parallelism</li>
+            <li>Languages must support <strong>concurrency</strong>, and stacks must be able to take advantage of opportunities for <strong>parallelism</strong></li>
           </ul>
+        </section>
+
+        <section>
+          <h2>So how do we get concurrent?</h2>
         </section>
 
         <section>
           <h2>Threads</h2>
           <ul>
-            <li>Fundamental abstraction of schedulable computational execution</li>
+            <li>Fundamental abstraction of computational execution</li>
             <li>Interpreters have threads</li>
             <li>Operating systems have threads</li>
+            <li>Always gonna need them (even if you don't use them directly)</li>
           </ul>
         </section>
 
         <section>
-          <h2>But what kind of thread does my interpreter use?</h2>
+          <section>
+            <h2>How do Ruby threads work?</h2>
+          </section>
+          <section>
+            <h2>Depends on the interpreter</h2>
+          </section>
+          <section>
+            <h2>You didn't think there would be *one* way, did you?</h2>
+          </section>
+          <section>
+            <h2>GIL or no GIL</h2>
+            <p>Threading in Ruby comes in two basic flavors -- those VMs that have a Global Interpreter Lock (GIL) and those that don't.</p>
+            <ul>
+              <li>MRI 1.8x - N Ruby VM threads GIL'd to 1 OS thread</li>
+              <li>MRI 1.9x - N Ruby VM threads GIL'd to N OS threads</li>
+              <li>JRuby and Rubinius (2.0+) - VM threads correspond directly to OS threads</li>
+            </ul>
+            <img src="img/ruby-gil-grigorik.png" alt="A representation of Ruby interpreters lifted from Ilya Grigorik's website" />
+            <small>The Ruby threading models - (<a href="http://www.igvita.com/2008/11/13/concurrency-is-a-myth-in-ruby/">http://www.igvita.com/2008/11/13/concurrency-is-a-myth-in-ruby/</a>)</small>
+          </section>
+        </section>
+
+
+        <section>
+          <section>
+            <h2>Fear, Uncertainty, Doubt</h2>
+            <img src="img/lying_words_that_lie.png" alt="" />
+          </section>
+          <section>
+            <img src="img/lies.jpg" alt="" />
+          </section>
+
+          <section>
+            <h2>Truth</h2>
+            <ul>
+              <li>All Ruby implementations have Thread - maybe for a reason?</li>
+              <li>Extra processes can complicate stuff enormously</li>
+              <li>New processes are *cheap*? Maybe on AWS.  Not on ARM.</li>
+              <li>Rails has been threadsafe since 2008</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Places you *have* to use threads</h2>
+            <ul>
+              <li>A console app that does things in the background (e.g. Metasploit console)</li>
+              <li>A GUI app that does anything at all</li>
+              <li>Speeding up collections of network interactions in one process</li>
+            </ul>
+            <aside class="notes">
+              There are lots of places you'll want to be able to do mroe than one thing at once.  I made an iPhone game one time and just having music in the backgroun meant - you guessed it - a separate thread.  Lots of us spend a lot of time programing for the web, which has a built-in concurrency primitive in the request.  This creates myopia IMO.
+            </aside>
+          </section>
         </section>
 
         <section>
-          <h2>GIL or no GIL</h2>
-          <p>Threading in Ruby comes in two basic flavors -- those VMs that have a Global Interpreter Lock(GIL) and those that don't.</p>
+          <section>
+            <h2>Celluloid</h2>
+            <h3>Easier concurrency with the actor pattern</h3>
+            <small><a href="http://en.wikipedia.org/wiki/Actor_model#Fundamental_concepts">http://en.wikipedia.org/wiki/Actor_model#Fundamental_concepts</a></small>
+          </section>
+          <section>
+            <h3>What's "actor" mean?</h3>
+            <ul>
+              <li>Entities in computation are "actors" which can send, receive, and act on messages</li>
+              <li>Each actor does its own thing - there's no assumed sequence of interactions</li>
+              <li>...so there's nothing keeping actor tasks from happening in parallel</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>In their own words...</h2>
+            <blockquote>
+              Much of the difficulty with building concurrent programs in Ruby arises because the object-oriented mechanisms for structuring code, such as classes and inheritance, are separate from the concurrency mechanisms, such as threads and locks. Celluloid combines these into a single structure, an active object running within a thread, called an "actor", or in Celluloid vernacular, a "cell".
+            </blockquote>
+            <small><a href="https://github.com/celluloid/celluloid">https://github.com/celluloid/celluloid</a></small>
+          </section>
+
+          <section>
+            <h2>Who uses it?</h2>
+            <ul>
+              <li><a href="http://sidekiq.org/">Sidekiq</a></li>
+              <li><a href="http://adhearsion.com/">Adhearsion</a></li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Why should I care?</h2>
+            <ul>
+              <li>Concurrency with just threads and mutexes *is* hard</li>
+              <li>And error prone</li>
+              <li>And notoriously hard to get right</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Celluloid builds on popular foundations</h2>
+            <ul>
+              <li>Erlang's concurrency is based on the actor model/pattern</li>
+              <li>This kind of thing is getting more and more common in languages</li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <h2>I've only scratched the surface</h2>
+        </section>
+
+        <section>
+          <h2>Get better at concurrency</h2>
           <ul>
-            <li>MRI 1.8x - N Ruby VM threads GIL'd to 1 OS thread</li>
-            <li>MRI 1.9x - N Ruby VM threads GIL'd to N OS threads</li>
-            <li>JRuby and Rubinius (2.0+) - VM threads correspond directly to OS threads</li>
+            <li>Learn lang/framework for its concurrency paradigm (Celluloid, Go)</li>
+            <li>Play around with threads and find out how they work</li>
+            <li>Learn to debug multi-threaded code</li>
           </ul>
         </section>
+
+        <section>
+          <h2>FIN!</h2>
+          <h4>questions?</h4>
+        </section>
+
+        <section>
+          <section>
+            <h2>Kata</h2>
+            <h3>Process Rings</h3>
+            <ul>
+              <li>http://rubyquiz.com/quiz135.html</li>
+              <li>Use threads not processes!</li>
+            </ul>
+          </section>
+        </section>
+
 			</div>
 
 		</div>

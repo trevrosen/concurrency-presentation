@@ -143,12 +143,13 @@ web_urls = [
 ]
 
 
+
 # Run multi-threaded by default
 # or pass in a number of threads.
 Benchmark.bm do |x|
+  limit = ARGV[0].nil? ? 10 : ARGV[0].to_i
   x.report do
-    #WebTitle.collect_and_print_these(web_urls, ARGV[1] || web_urls.size)
-    WebTitle.collect_and_print_these(web_urls, ARGV[1] || 10)
+    WebTitle.collect_and_print_these(web_urls, limit)
   end
 end
 
