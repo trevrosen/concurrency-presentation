@@ -1,6 +1,6 @@
 ![](https://raw.github.com/trevrosen/concurrency-presentation/master/slides/img/lies.jpg)
 
-<small><em>Watch <a href="http://video.adultswim.com/the-venture-bros/index.html">The Venture Brothers</a></em></small>
+<small><em>(Watch this guy on <a href="http://video.adultswim.com/the-venture-bros/index.html">The Venture Brothers</a>)</em></small>
 
 ### Purpose
 
