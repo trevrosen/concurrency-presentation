@@ -53,12 +53,19 @@ kata = Thread.new{ print "and do a kata with threads."}
 
         <section>
           <h2>Concurrency isn't Parallelism</h2>
+          <aside class="notes">
+            This is worth mentioning because people use these interchangably.
+            They aren't interchangable -- there are important differences
+          </aside>
         </section>
 
         <section>
           <h2>Concurrency</h2>
           <p>"Programming as the composition of independently executing processes."</p>
           <small><a href="http://concur.rspace.googlecode.com/hg/talk/concur.html#title-slide">http://concur.rspace.googlecode.com/hg/talk/concur.html#title-slide</a></small>
+          <aside class="notes">
+            Here, Pike means "process" in the generic sense -- not like an OS process.  Think like Turing's tape.
+          </aside>
         </section>
 
         <section>
@@ -164,7 +171,14 @@ kata = Thread.new{ print "and do a kata with threads."}
               <li>Entities in computation are "actors" which can send, receive, and act on messages</li>
               <li>Each actor does its own thing - there's no assumed sequence of interactions</li>
               <li>...so there's nothing keeping actor tasks from happening in parallel</li>
+              <li>in fact, you *assume* asynchronicity and program for it</li>
+              <li>ALL communications happen via messages. No shared state between actors.</li>
             </ul>
+            <aside class="notes">
+              * Shared state is eliminated in this model
+              * This means one of the biggest headaches in concurrent programming is eliminated
+              * Go's philosophy on this is the most elegant sum-up: "don't communicate by sharing memory - share memory by communicating"
+            </aside>
           </section>
 
           <section>
@@ -198,19 +212,65 @@ kata = Thread.new{ print "and do a kata with threads."}
               <li>This kind of thing is getting more and more common in languages</li>
             </ul>
           </section>
+
+          <section>
+            <h3>Celluloid example: futures</h3>
+            <pre>
+              <code>class Hasher
+  include Celluloid
+
+  def initialize(secret)
+    @hash = Digest::SHA2.hexdigest(secret)
+  end
+
+  def add(data, n = 100000)
+    string = @hash + data
+    n.times { string = Digest::SHA2.hexdigest(string) }
+    @hash = string
+  end
+end</code>
+            </pre>
+            <aside class="notes">
+              * including Celluloid does lots of interesting stuff - ex: overrides "new" and creates a thread per actor instance
+              * We do a non-trivial computation in Hasher#add
+              * We will use the "future" method in Celluloid to get an asynch'ly computed value
+            </aside>
+          </section>
+          <section>
+          <h3>Celluloid example: futures</h3>
+            <pre>
+              <code>hasher = Hasher.new("super secret initialization data")
+
+future = hasher.future.add("some data to be hashed")
+
+puts "The hasher is now running, but this thread is free"
+
+puts "Getting the hasher's return value... "
+p future.value</code>
+            </pre>
+          </section>
         </section>
 
         <section>
           <h2>I've only scratched the surface</h2>
+          <aside class="notes">
+            * Threads and concurrency are vital to know about
+            * Celluloid is a powerful and interesting library that you can learn a lot from - I rec' the tutorial linked in the README
+          </aside>
         </section>
 
         <section>
-          <h2>Get better at concurrency</h2>
+          <h2>A modest suggestion</h2>
+          <h3>We should all get better at concurrency</h3>
           <ul>
             <li>Learn lang/framework for its concurrency paradigm (Celluloid, Go)</li>
             <li>Play around with threads and find out how they work</li>
             <li>Learn to debug multi-threaded code</li>
           </ul>
+          <aside class="notes">
+            * I'm working on learning Go, which I highly, highly recommend.
+            * We won't solve that big macro problem unless we all get better at this stuff.
+          </aside>
         </section>
 
         <section>
