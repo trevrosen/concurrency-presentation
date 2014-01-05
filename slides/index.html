@@ -38,7 +38,7 @@
 			<div class="slides">
         <section>
           <h1>CONCURRENCEH!</h1>
-          <h4>(Download github.com/trevrosen/concurrency-presentation)</h4>
+          <h4>(Download <a href="http://github.com/trevrosen/concurrency-presentation">github.com/trevrosen/concurrency-presentation</a>)</h4>
           <pre>
           <code>
 talk = Thread.new{ print "Let's talk concurrency "}
@@ -140,9 +140,10 @@ kata = Thread.new{ print "and do a kata with threads."}
             <h2>Truth</h2>
             <ul>
               <li>All Ruby implementations have Thread - maybe for a reason?</li>
+              <li>Ruby switches to another thread if IO would block b/c it's idle</li>
               <li>Extra processes can complicate stuff enormously</li>
               <li>New processes are *cheap*? Maybe on AWS.  Not on ARM.</li>
-              <li>Rails has been threadsafe since 2008</li>
+              <li>Rails has been threadsafe since 2008 - maybe for a reason?</li>
             </ul>
           </section>
 
