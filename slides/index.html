@@ -61,6 +61,15 @@ kata = Thread.new{ puts "Let's do a kata with threads."}
         </section>
 
         <section>
+          <h2>Anti-Goals</h2>
+          <h4>(stuff I *don't* want to do tonight)</h4>
+          <ul>
+            <li>Imply that threads are the *only* way to achieve concurrency</li>
+            <li>Rip on NodeJS/evented programming</li>
+          </ul>
+        </section>
+
+        <section>
           <h2>Concurrency isn't Parallelism</h2>
           <aside class="notes">
             This is worth mentioning because people use these interchangably.
@@ -108,8 +117,9 @@ kata = Thread.new{ puts "Let's do a kata with threads."}
             <li>Fundamental abstraction of computational execution</li>
             <li>Interpreters have threads</li>
             <li>Operating systems have threads</li>
-            <li>Always gonna need them (even if you don't use them directly)</li>
+            <li>Always gonna need them (even if you don't use them directly)<sup>*</sup></li>
           </ul>
+          <small>*<em>eventually everything is multi-threaded.  Even NodeJS.  :-)</em></small>
         </section>
 
         <section>
@@ -209,10 +219,10 @@ kata = Thread.new{ puts "Let's do a kata with threads."}
 
           <section>
             <h2>Why should I care?</h2>
+            <p>Detailed concurrency with just threads and mutexes *is* hard</p>
             <ul>
-              <li>Concurrency with just threads and mutexes *is* hard</li>
-              <li>And error prone</li>
-              <li>And notoriously hard to get right</li>
+              <li>difficult to design/conceptualize</li>
+              <li>any badly designed code is hard to debug/extend by definition</li>
             </ul>
           </section>
           <section>

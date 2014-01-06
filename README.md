@@ -33,6 +33,9 @@ Aims to discuss and enlighten on two basic themes:
 * [Concurrency in Erlang and Scala](http://savanne.be/articles/concurrency-in-erlang-scala/)
 * [Asynchronous thread interrupt handling in Ruby 2.x](http://globaldev.co.uk/2013/03/ruby-2-0-0-in-detail/#asynchronous_thread_interrupt_handling)
 * [How RapGenius analyzed 178k links for shadiness](http://news.rapgenius.com/Rap-genius-founders-rap-genius-is-back-on-google-lyrics)
+* [NodeJS - The what, why, how, and when](http://blog.xebia.com/2011/08/16/nodejs-the-what-why-how-and-when/)
+* [NodeJS Event Loop (Stack Overflow))](http://stackoverflow.com/questions/10680601/nodejs-event-loop)
+
 
 #### RubyTapas links
 Avdi Grimm's ["Ruby Tapas"](http://rubytapas.com) screencast series is truly excellent.  Awhile back, he did a series on threads that I found helpful.  Here are some links, basically here to show you the breadth of what he covers.  Subscribing to RubyTapas is a really good idea - you probably spend $9/month on less worthy stuff all the time.
