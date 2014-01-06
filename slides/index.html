@@ -52,6 +52,15 @@ kata = Thread.new{ print "and do a kata with threads."}
         </section>
 
         <section>
+          <h2>Goals</h2>
+          <ul>
+            <li>Dispell some of the FUD around concurrency in Ruby</li>
+            <li>Learn (a bit) about the primitives for doing it in Ruby</li>
+            <li>Understand why concurrency matters and what else is out there at both the library and language level</li>
+          </ul>
+        </section>
+
+        <section>
           <h2>Concurrency isn't Parallelism</h2>
           <aside class="notes">
             This is worth mentioning because people use these interchangably.
@@ -210,7 +219,7 @@ kata = Thread.new{ print "and do a kata with threads."}
             <h2>Celluloid builds on popular foundations</h2>
             <ul>
               <li>Erlang's concurrency is based on the actor model/pattern</li>
-              <li>This kind of thing is getting more and more common in languages</li>
+              <li>Concurrency approaches predicated on structured communication and lack of shared state are fast becoming the dominant paradigm in languages and frameworks</li>
             </ul>
           </section>
 
@@ -285,7 +294,7 @@ p future.value</code>
             <h3>Process Rings</h3>
             <ul>
               <li>http://rubyquiz.com/quiz135.html</li>
-              <li>Use threads not processes!</li>
+              <li>Use threads not forks!</li>
             </ul>
           </section>
         </section>
