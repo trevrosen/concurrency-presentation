@@ -41,7 +41,7 @@
           <h4>(Download <a href="http://github.com/trevrosen/concurrency-presentation">github.com/trevrosen/concurrency-presentation</a>)</h4>
           <pre>
           <code>
-talk = Thread.new{ puts "Let's talk concurrency "}
+talk = Thread.new{ puts "Let's talk concurrency."}
 kata = Thread.new{ puts "Let's do a kata with threads."}
 [talk, kata].map(&:join)
           </code>
