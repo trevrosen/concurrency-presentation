@@ -124,7 +124,7 @@ kata = Thread.new{ puts "Let's do a kata with threads."}
           </section>
           <section>
             <h2>GIL or no GIL</h2>
-            <p>Threading in Ruby comes in two basic flavors -- those VMs that have a Global Interpreter Lock (GIL) and those that don't.</p>
+            <p>Threading in Ruby comes in two basic flavors -- those VMs that have a Global Interpreter Lock (GIL) and those that don't. Confusingly, the GIL is renamed to "GVL" in Ruby 2.0 ("V" is for "Virtual Machine"). They have the same purpose.</p>
             <ul>
               <li>MRI 1.8x - N Ruby VM threads GIL'd to 1 OS thread</li>
               <li>MRI 1.9x - N Ruby VM threads GIL'd to N OS threads</li>
