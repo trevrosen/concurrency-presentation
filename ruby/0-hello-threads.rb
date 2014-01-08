@@ -15,4 +15,4 @@ puts "Calling thread (#{Thread.current.object_id})is running"
 # Make the calling thread wait for them all to finish.
 # This is dumb and you shouldn't actually do something like this.
 # I'm just doing it here to prove a point
-sleep 2
+sleep 0.5
