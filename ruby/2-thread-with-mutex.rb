@@ -30,7 +30,6 @@ calculator = Thread.new{
 #[foo, bar].map(&:join)
 
 sleep 1
-#semaphore.lock
 
 puts "Counter 1: #{counter1}"
 puts "Counter 2: #{counter2}"
