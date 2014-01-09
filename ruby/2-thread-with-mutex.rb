@@ -62,4 +62,9 @@ puts "Difference: #{difference}"
 #
 # Here the difference will always be 0, because the lock ensures that
 # the calculator thread can't do its calculation until both of the
-# countX variables have been incremented.
+# countX variables have been incremented.  NOTE: you may see a value for
+# counter1 or counter2 that would make you think difference should be > 0.
+# This is because the child thread is racing the puts statement itself
+# in the main thread.  The bottom line is that the mutex ensures that the
+# difference is zero and that both values are updated, so what you're seeing 
+# is a display difference only.
